@@ -44,6 +44,11 @@ def completeness(row):
     non_null_fields = row.count()
     return round(non_null_fields / total_fields, 2)
 
+# 1. Completeness
+# Measures how many non fields are present in the row
+# Divides the number of non-null fields by the total fields
+# Returns a score from 0-1 after calculating the entire
+
 def accuracy(row):
     try:
         lat, lon = float(row['actual_lat']), float(row['actual_lon'])
@@ -52,6 +57,10 @@ def accuracy(row):
     except:
         pass
     return 0.0
+
+# 2. Accuracy
+# Checks if the actual_lat and actual_lon are within Earth's valid latitude/longitude ranges.
+# Returns 1 if valid, else 0
 
 def timeliness(row):
     try:
@@ -63,12 +72,20 @@ def timeliness(row):
         return 1.0 if duration <= 3 * 24 * 3600 else 0.0
     except:
         return 0.0
+    
+# 3. Timeliness
+# Calculates how long it took to deliver the package
+# Returns 1 if it was delivered within 3 days, else 0
 
 def validity(row):
     try:
         return 1.0 if float(row['weight_kg']) > 0 and 'x' in str(row['dimensions_cm']) else 0.0
     except:
         return 0.0
+    
+# 4. Validity
+# Checks if the weight is positive and the dimensions field contains "x" as a separator
+# Returns 1 if both conditions are met
 
 def consistency(row):
     try:
@@ -93,6 +110,12 @@ def consistency(row):
         return 1.0
     except:
         return 0.0
+    
+# 5. Consistency
+# Ensures string fields are lowercase (to avoid inconsistent casings)
+# Ensures numeric fields are actually numbers
+# Ensures datetime fields are proper datetime objects
+
 
 # ---------------------- 5. Compute Scores & Update Main Table ----------------------
 for _, row in df.iterrows():
