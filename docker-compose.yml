@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: jne-logistics-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: jnelogistics
+    ports:
+      - "5433:5432"  # Local port 5439 maps to container port 5432
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql      # SQL to initialize schema
+      - ./raw_data_mart.csv:/docker-entrypoint-initdb.d/raw_data_mart.csv  # Optional: data file
+      - jne_postgres_data:/var/lib/postgresql/data           # Persistent DB volume
+
+volumes:
+  jne_postgres_data:
